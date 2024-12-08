@@ -1,0 +1,12 @@
+[package]
+name = "unicorn-rs-demo"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.3.14", features = ["derive"] }
+capstone = "0.12.0"
+env_logger = "0.11.5"
+goblin = "0.9.2"
+log = "0.4.22"
+unicorn-engine = "2.1.1"
