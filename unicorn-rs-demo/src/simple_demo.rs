@@ -26,10 +26,7 @@ fn emulate_quick_fib(bin_code: &[u8], x: i32) -> i64 {
     let emu = &mut unicorn;
 
     let code_base_addr = 0x100000;
-    let code_size: u64 = 1024*1024*8;
-
-    let quick_fib_start_address = 0x1006a0;
-    let quick_fib_end_address = 0x100720;
+    let code_size: u64 = 1024*1024*2;
 
     emu.mem_map(code_base_addr, code_size as usize, Permission::ALL).expect("failed to map code page");
     emu.mem_write(code_base_addr, &bin_code).expect("failed to write instructions");
@@ -50,8 +47,8 @@ fn emulate_quick_fib(bin_code: &[u8], x: i32) -> i64 {
     }).expect("fail to add code hook");
 
     let bl_pow_addresses = [
-        0x1006cc,
-        0x1006fc,
+        0x1006dc,
+        0x10070c,
     ];
     for bl_pow_addr in bl_pow_addresses {
         let nop_instruction = [0x1f, 0x20, 0x03, 0xd5];
@@ -69,17 +66,20 @@ fn emulate_quick_fib(bin_code: &[u8], x: i32) -> i64 {
     }
 
     let stack_base_addr = 0x8000000;
-    let stack_size: u64 = 1024*1024*40;
+    let stack_size: u64 = 1024*1024*8;
     emu.mem_map(stack_base_addr, stack_size as usize, Permission::ALL).expect("failed to map stack page");
     emu.reg_write(RegisterARM64::SP, stack_base_addr + (stack_size / 2)).expect("failed write SP register");
 
     let transformed_input_value: u64 = u64::from_le_bytes((x as i64).to_le_bytes());
     emu.reg_write(RegisterARM64::W0, transformed_input_value).expect("failed write W0");
 
+    let quick_fib_start_address = 0x1006b0;
+    let quick_fib_end_address = 0x100730;
+
     emu.emu_start(quick_fib_start_address, (quick_fib_end_address) as u64, 10 * SECOND_SCALE, 100000).expect("emulation failed");
 
-    let r_w1 = emu.reg_read(RegisterARM64::X0).unwrap();
-    let fib_result = i64::from_le_bytes(r_w1.to_le_bytes());
+    let r_x0 = emu.reg_read(RegisterARM64::X0).unwrap();
+    let fib_result = i64::from_le_bytes(r_x0.to_le_bytes());
 
     fib_result
 }
