@@ -24,11 +24,7 @@
           default = unicorn-doc-demo;
         };
         devShells.default = pkgs.mkShell {
-          buildInputs =
-            unicorn-doc-demo-package.nativeBuildInputs
-            ++ (with pkgs; [
-
-          ]);
+          buildInputs = unicorn-doc-demo-package.propagatedBuildInputs;
         };
     });
 }
