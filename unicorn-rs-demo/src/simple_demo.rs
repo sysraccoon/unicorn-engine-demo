@@ -70,7 +70,7 @@ fn emulate_quick_fib(bin_code: &[u8], x: i32) -> i64 {
     emu.mem_map(stack_base_addr, stack_size as usize, Permission::ALL).expect("failed to map stack page");
     emu.reg_write(RegisterARM64::SP, stack_base_addr + (stack_size / 2)).expect("failed write SP register");
 
-    let transformed_input_value: u64 = u64::from_le_bytes((x as i64).to_le_bytes());
+    let transformed_input_value = x as u64;
     emu.reg_write(RegisterARM64::W0, transformed_input_value).expect("failed write W0");
 
     let quick_fib_start_address = 0x1006b0;
@@ -79,7 +79,7 @@ fn emulate_quick_fib(bin_code: &[u8], x: i32) -> i64 {
     emu.emu_start(quick_fib_start_address, (quick_fib_end_address) as u64, 10 * SECOND_SCALE, 100000).expect("emulation failed");
 
     let r_x0 = emu.reg_read(RegisterARM64::X0).unwrap();
-    let fib_result = i64::from_le_bytes(r_x0.to_le_bytes());
+    let fib_result = r_x0 as i64;
 
     fib_result
 }

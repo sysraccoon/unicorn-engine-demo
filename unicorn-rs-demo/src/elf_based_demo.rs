@@ -42,7 +42,7 @@ fn emulate_quick_fib(bin_code: &[u8], source_value: i32) -> i64 {
     let (quick_fib_start, quick_fib_end) = find_function_address_range(&elf, "quick_fib")
         .expect("failed to find 'quick_fib' symbol");
 
-    let source_value: u64 = u64::from_le_bytes((source_value as i64).to_le_bytes());
+    let source_value: u64 = source_value as u64;
     emu.reg_write(RegisterARM64::W0, source_value)
         .expect("failed write W0");
 
@@ -50,7 +50,7 @@ fn emulate_quick_fib(bin_code: &[u8], source_value: i32) -> i64 {
         .expect("emulation failed");
 
     let r_x0 = emu.reg_read(RegisterARM64::X0).unwrap();
-    let fib_result = i64::from_le_bytes(r_x0.to_le_bytes());
+    let fib_result = r_x0 as i64;
 
     fib_result
 }
