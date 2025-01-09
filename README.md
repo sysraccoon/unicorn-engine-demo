@@ -1,6 +1,6 @@
 # Unicorn Engine Demo
 
-Original Video: [link](https://example.com) (TODO add actual link to video)
+Original Video: [link](https://youtu.be/qJiM1Ky6A14)
 
 ## Project Setup
 
